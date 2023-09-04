@@ -1,0 +1,26 @@
+======================================================================
+                            Alias help
+======================================================================
+This file contains all the custom aliases to make your life faster
+
+Composer:
+    - cmp
+        Composer shorthand
+    - cmi
+        Composer install shorthand
+
+Symfony:
+    - bcs
+        Executes the symfony's php bin/console
+    - encore
+        Executes symfony's encore if installed in current directory
+    (custom)
+    - symDevSchemaRefresh
+        CAREFUL! ONLY FOR DEV IN A TEST PROJECT! THIS WILL ERASE YOUR
+        MIGRATIONS AND DATABASE!!!!!
+        Elliminates the database schema, re-creates the migrations
+        and migrate the database
+
+Laravel:
+    - pa
+        php artisan shorthand

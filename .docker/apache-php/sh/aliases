@@ -1,0 +1,8 @@
+# Todo: highlights on help
+alias aliases="cat /etc/aliases-help"
+alias bcs="php bin/console"
+alias cmp="composer"
+alias cmi="composer install"
+alias pa="php artisan"
+alias encore="./node_modules/.bin/encore"
+alias symDevSchemaRefresh="echo \"Attention! This script will drop the database and wipe all your Symfony migrations. Proceed? Press enter. \" && read input && cd /var/www/html && bin/console doctrine:schema:drop -n --force --full-database && rm /var/www/html/migrations/*.php && bin/console make:migration && bin/console doctrine:migrations:migrate -n"

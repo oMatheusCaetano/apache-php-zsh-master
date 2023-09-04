@@ -1,0 +1,65 @@
+image: docker:20.10
+stages:
+  - build-push
+
+variables:
+  DOCKER_DRIVER: overlay2
+  BUILDX_VERSION: v0.8.2
+  BUILDX_ARCH: linux-amd64
+  # Let's agnosticize our docker image
+  TARGET_PLATFORMS: "linux/amd64"
+
+default:
+  before_script:
+    # install ssh-agent
+    - apk add --update --no-cache openssh-client git curl bash
+    - git config --global user.email "runner@andersonpem.com"
+    - git config --global user.name "AndersonPEM Runner"
+    # Add the server to known hosts
+    - docker login -u "gitlab-ci-token" -p $CI_JOB_TOKEN $CI_REGISTRY
+    - wget -O /usr/bin/docker-buildx
+      https://github.com/docker/buildx/releases/download/${BUILDX_VERSION}/buildx-${BUILDX_VERSION}.${BUILDX_ARCH}
+    - chmod +x /usr/bin/docker-buildx
+    - docker info
+
+build-push:
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+  services:
+    - docker:20.10-dind
+  stage: build-push
+  # tags:
+  #   - build
+  script:
+    - echo "Creating a Docker Buildx environment"
+    - docker-buildx create --use
+    - echo "Building images..."
+    - docker-buildx build 
+      -f .docker/apache-php/Dockerfile-7.2
+      --platform ${TARGET_PLATFORMS}
+      --tag registry.gitlab.com/andersonpem/apache-php-zsh:7.2
+      --push
+      .
+
+    - docker-buildx build
+      -f .docker/apache-php/Dockerfile-7.3
+      --platform ${TARGET_PLATFORMS}
+      --tag registry.gitlab.com/andersonpem/apache-php-zsh:7.3
+      --push
+      .
+
+    - docker-buildx build
+      -f .docker/apache-php/Dockerfile-7.4
+      --platform ${TARGET_PLATFORMS}
+      --tag registry.gitlab.com/andersonpem/apache-php-zsh:7.4
+      --push
+      .
+
+    - echo "Image publishing complete"
+
+  only:
+    - master
+    - feature/ci-cd
+
+  
